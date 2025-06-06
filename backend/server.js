@@ -17,7 +17,7 @@ app.use('/api', authRoutes);          // Route đăng ký, đăng nhập
 app.use('/api/transactions', transactionRoutes);  // Route quản lý giao dịch
 
 // Cấu hình cổng
-const PORT = process.env.PORT || 5000;  // Port backend
+const PORT = parseInt(process.env.PORT) || 3001;  // Port backend
 
 // Kiểm tra kết nối database trước khi chạy server
 sequelize.authenticate()
@@ -25,11 +25,20 @@ sequelize.authenticate()
     console.log("Database connected successfully");
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
+    }).on('error', (err) => {
+      if (err.code === 'EACCES') {
+        console.error(`Port ${PORT} requires elevated privileges. Try using a port number above 1024.`);
+      } else if (err.code === 'EADDRINUSE') {
+        console.error(`Port ${PORT} is already in use. Try a different port.`);
+      } else {
+        console.error('Server error:', err);
+      }
+      process.exit(1);
     });
   })
   .catch(err => {
-    console.error("Unable to connect to the database:", err);  // Thêm chi tiết lỗi
-    process.exit(1);  // Dừng server nếu không kết nối được DB
+    console.error("Unable to connect to the database:", err);
+    process.exit(1);
   });
 
 
