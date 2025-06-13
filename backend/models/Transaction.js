@@ -2,6 +2,9 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 const User = require('./User');
 
+// Define the transaction type enum values
+const TRANSACTION_TYPES = ['income', 'expense'];
+
 const Transaction = sequelize.define('Transaction', {
   id: {
     type: DataTypes.INTEGER,
@@ -17,8 +20,11 @@ const Transaction = sequelize.define('Transaction', {
     allowNull: false
   },
   type: {
-    type: DataTypes.ENUM('income', 'expense'),
-    allowNull: false
+    type: DataTypes.STRING, // Changed from ENUM to  for PostgreSQL compatibility
+    allowNull: false,
+    validate: {
+      isIn: [TRANSACTION_TYPES] // Validate against allowed values
+    }
   },
   category: {
     type: DataTypes.STRING,

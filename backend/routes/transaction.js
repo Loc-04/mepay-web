@@ -9,7 +9,17 @@ router.post('/', async (req, res) => {
   try {
     const { user_id, amount, type, category, date, description } = req.body;
     const transaction = await Transaction.create({ user_id, amount, type, category, date, description });
-    res.status(201).json({ message: 'Thêm giao dịch thành công', transaction });
+
+    // Convert amount from string (money) to number for the new transaction
+    let newAmount = transaction.amount;
+    if (typeof newAmount === 'string') {
+      newAmount = newAmount.replace(/[^0-9.-]+/g, '');
+      newAmount = newAmount.replace(/,/g, '');
+      newAmount = parseFloat(newAmount);
+    }
+    const formattedTransaction = { ...transaction.toJSON(), amount: newAmount };
+
+    res.status(201).json({ message: 'Thêm giao dịch thành công', transaction: formattedTransaction });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Lỗi server' });
@@ -24,7 +34,22 @@ router.get('/:user_id', async (req, res) => {
       where: { user_id },
       order: [['date', 'DESC']]
     });
-    res.json(transactions);
+
+    // Convert amount from string (money) to number for each transaction
+    const formattedTransactions = transactions.map(t => {
+      
+      let amount = t.amount;
+      if (typeof amount === 'string') {
+        // Remove everything except digits, dot, and minus
+        amount = amount.replace(/[^0-9.-]+/g, '');
+        // Remove commas (in case of "1,000.00")
+        amount = amount.replace(/,/g, '');
+        amount = parseFloat(amount);
+      }
+      return { ...t.toJSON(), amount };
+    });
+
+    res.json(formattedTransactions);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Lỗi server' });
