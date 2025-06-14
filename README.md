@@ -55,6 +55,7 @@ npm start
 cd frontend
 npm install
 npm start
+npm install react-icons
 ```
 
 ### Environment Variables
