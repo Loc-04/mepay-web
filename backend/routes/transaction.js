@@ -1,6 +1,7 @@
 const express = require('express');
 const Transaction = require('../models/Transaction');
 const User = require('../models/User');
+const activityController = require('../controllers/activityController');
 
 const router = express.Router();
 // Middleware để xác thực người dùng (có thể sử dụng JWT hoặc session)
@@ -9,6 +10,15 @@ router.post('/', async (req, res) => {
   try {
     const { user_id, amount, type, category, date, description } = req.body;
     const transaction = await Transaction.create({ user_id, amount, type, category, date, description });
+
+    // Log activity
+    await activityController.createActivity(
+      user_id,
+      'transaction',
+      category,
+      amount,
+      `Added ${type} transaction: ${description}`
+    );
 
     // Convert amount from string (money) to number for the new transaction
     let newAmount = transaction.amount;
@@ -67,6 +77,16 @@ router.put('/:id', async (req, res) => {
     );
     if (updated) {
       const updatedTransaction = await Transaction.findByPk(id);
+      
+      // Log activity
+      await activityController.createActivity(
+        updatedTransaction.user_id,
+        'transaction',
+        category,
+        amount,
+        `Updated ${type} transaction: ${description}`
+      );
+
       res.json({ message: 'Cập nhật thành công', transaction: updatedTransaction });
     } else {
       res.status(404).json({ message: 'Không tìm thấy giao dịch' });
@@ -81,8 +101,19 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const id = req.params.id;
-    const deleted = await Transaction.destroy({ where: { id } });
-    if (deleted) {
+    const transaction = await Transaction.findByPk(id);
+    
+    if (transaction) {
+      // Log activity before deleting
+      await activityController.createActivity(
+        transaction.user_id,
+        'transaction',
+        transaction.category,
+        transaction.amount,
+        `Deleted ${transaction.type} transaction: ${transaction.description}`
+      );
+
+      const deleted = await Transaction.destroy({ where: { id } });
       res.json({ message: 'Đã xóa giao dịch' });
     } else {
       res.status(404).json({ message: 'Không tìm thấy giao dịch' });

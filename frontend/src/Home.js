@@ -3,6 +3,7 @@ import { Pie } from 'react-chartjs-2';
 import { Chart, Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { FaSun, FaMoon } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const lightPalette = {
   blue: '#3B4CB8',
@@ -34,6 +35,7 @@ function Home({ user, token, onLogout }) {
   const [form, setForm] = useState({ amount: '', type: 'income', category: '', date: '', description: '' });
   const [message, setMessage] = useState('');
   const [mode, setMode] = useState(() => localStorage.getItem('themeMode') || 'light');
+  const navigate = useNavigate();
 
   const palette = mode === 'dark' ? darkPalette : lightPalette;
 
@@ -171,12 +173,32 @@ function Home({ user, token, onLogout }) {
         <div>
           <div style={{ fontWeight: 900, fontSize: 28, color: palette.blue, marginBottom: 32, transition: 'color 0.6s' }}>Track.</div>
           <div style={{ color: palette.dark, fontWeight: 700, marginBottom: 24, transition: 'color 0.6s' }}>Dashboard</div>
+          <button
+            onClick={() => navigate('/login-activity')}
+            style={{
+              background: palette.accent,
+              color: palette.white,
+              border: 'none',
+              borderRadius: 12,
+              padding: '12px 0',
+              fontWeight: 700,
+              fontSize: 16,
+              marginBottom: 16,
+              cursor: 'pointer',
+              width: '100%',
+              transition: 'background 0.6s, color 0.6s',
+            }}
+          >
+            Login Activity
+          </button>
           <div style={{ color: palette.faded, marginBottom: 16, transition: 'color 0.6s' }}>Graphical</div>
           <div style={{ color: palette.faded, marginBottom: 16, transition: 'color 0.6s' }}>Cloud Store</div>
           <div style={{ color: palette.faded, marginBottom: 16, transition: 'color 0.6s' }}>Research</div>
           <div style={{ color: palette.faded, marginBottom: 16, transition: 'color 0.6s' }}>Analysis</div>
         </div>
-        <button style={{ background: palette.accent, color: palette.white, border: 'none', borderRadius: 12, padding: '12px 0', fontWeight: 700, fontSize: 16, marginTop: 32, cursor: 'pointer', transition: 'background 0.6s, color 0.6s' }}>Upgrade</button>
+        <div>
+          <button style={{ background: palette.accent, color: palette.white, border: 'none', borderRadius: 12, padding: '12px 0', fontWeight: 700, fontSize: 16, marginTop: 16, cursor: 'pointer', transition: 'background 0.6s, color 0.6s', width: '100%' }}>Upgrade</button>
+        </div>
       </div>
       {/* Main content */}
       <div style={{ flex: 1, background: palette.gray, borderRadius: 32, margin: 24, padding: 32, display: 'flex', flexDirection: 'column', transition: 'background 0.6s, color 0.6s' }}>

@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const activityController = require('../controllers/activityController');
 require('dotenv').config();
 
 const router = express.Router();
@@ -20,6 +21,16 @@ router.post('/register', async (req, res) => {
     const password_hash = await bcrypt.hash(password, salt);
     // Tạo user mới
     const user = await User.create({ account_name, email, password_hash });
+
+    // Log registration activity
+    await activityController.createActivity(
+      user.id,
+      'account',
+      'registration',
+      null,
+      'Account registered'
+    );
+
     return res.status(201).json({ message: 'Đăng ký thành công', userId: user.id });
   } catch (err) {
     console.error(err);
@@ -47,6 +58,16 @@ router.post('/login', async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
+
+    // Log login activity
+    await activityController.createActivity(
+      user.id,
+      'account',
+      'login',
+      null,
+      'User logged in'
+    );
+
     // Trả về thông tin user + token
     res.json({
       message: 'Đăng nhập thành công',

@@ -22,6 +22,7 @@ function Login({ onLoginSuccess }) {
       }
       const data = await res.json();
       setMessage(data.message);
+      localStorage.setItem('token', data.token); // Save JWT token
       if (onLoginSuccess) onLoginSuccess(data.user, data.token);
       setTimeout(() => navigate('/home'), 500); // Redirect after login
     } catch (err) {

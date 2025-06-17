@@ -4,6 +4,7 @@ import './App.css';
 import Register from './Register';
 import Login from './Login';
 import Home from './Home';
+import LoginActivity from './pages/LoginActivity';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -39,6 +40,7 @@ function App() {
           }} />
         } />
         <Route path="/home" element={user && token ? <Home user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/login" />} />
+        <Route path="/login-activity" element={user && token ? <LoginActivity token={token} /> : <Navigate to="/login" />} />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>

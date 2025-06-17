@@ -4,6 +4,7 @@ const cors = require('cors');       // CORS để cho phép frontend kết nối
 const sequelize = require('./config/db'); // Import sequelize từ config/db.js
 const authRoutes = require('./routes/auth'); // Import các routes
 const transactionRoutes = require('./routes/transaction');
+const activityRoutes = require('./routes/activities');
 const app = express();              // Khởi tạo express app
 
 app.use(cors({
@@ -15,6 +16,7 @@ app.use(express.json());             // Middleware xử lý dữ liệu JSON
 // Các route
 app.use('/api', authRoutes);          // Route đăng ký, đăng nhập
 app.use('/api/transactions', transactionRoutes);  // Route quản lý giao dịch
+app.use('/api/activities', activityRoutes);  // Route quản lý hoạt động
 
 // Cấu hình cổng
 const PORT = parseInt(process.env.PORT) || 3001;  // Port backend
