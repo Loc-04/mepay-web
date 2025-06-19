@@ -4,6 +4,7 @@ import { Chart, Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { FaSun, FaMoon } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx';
 
 const lightPalette = {
   blue: '#3B4CB8',
@@ -166,6 +167,39 @@ function Home({ user, token, onLogout }) {
     </div>
   );
 
+  // Export to Excel handler
+  const handleExport = () => {
+    // Prepare data rows
+    const data = transactions.map(t => ({
+      Date: t.date,
+      Type: t.type.charAt(0).toUpperCase() + t.type.slice(1),
+      Category: t.category,
+      Amount: parseFloat(t.amount),
+      Description: t.description
+    }));
+    // Add a total row
+    data.push({
+      Date: '',
+      Type: '',
+      Category: 'TOTAL',
+      Amount: data.reduce((sum, row) => sum + (typeof row.Amount === 'number' ? row.Amount : 0), 0),
+      Description: ''
+    });
+    // Create worksheet and workbook
+    const ws = XLSX.utils.json_to_sheet(data, { header: ['Date', 'Type', 'Category', 'Amount', 'Description'] });
+    // Format header row bold
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const cell = ws[XLSX.utils.encode_cell({ r: 0, c: C })];
+      if (cell) cell.s = { font: { bold: true } };
+    }
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Transactions');
+    // Export
+    XLSX.writeFile(wb, 'transactions.xlsx');
+  };
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: palette.bg, color: palette.text, transition: 'background 0.6s, color 0.6s' }}>
       {/* Sidebar */}
@@ -260,6 +294,10 @@ function Home({ user, token, onLogout }) {
               <button type="submit" style={{ background: palette.accent, color: palette.white, fontWeight: 700, border: 'none', borderRadius: 8, padding: '10px 24px', fontSize: 16, cursor: 'pointer', marginLeft: 8 }}>Add</button>
             </form>
             <div style={{ color: palette.blue, minHeight: 24, marginBottom: 8 }}>{message}</div>
+            {/* Export Button */}
+            <button onClick={handleExport} style={{ background: palette.accent, color: palette.white, fontWeight: 700, border: 'none', borderRadius: 8, padding: '10px 24px', fontSize: 16, cursor: 'pointer', marginBottom: 16 }}>
+              Export to Excel
+            </button>
             <div style={{ maxHeight: 220, overflowY: 'auto', marginTop: 16 }}>
               <table style={{ width: '100%', textAlign: 'center', borderCollapse: 'collapse', fontSize: 15 }}>
                 <thead>
