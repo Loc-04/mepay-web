@@ -1,112 +1,104 @@
-# MePay - Personal Finance Management Application
+# MePay
 
-MePay is a full-stack web application designed to help users manage their personal finances, track transactions, and visualize their spending patterns.
+MePay is a small personal finance pet project. It is a simple full-stack web app for tracking transactions and visualizing basic spending patterns.
 
-## Project Structure
+This is not one of my main portfolio projects. I keep it public as a learning project for practicing React, Express, database access, authentication, and charts.
 
-The project is divided into two main parts:
+## Features
 
-### Frontend (`/frontend`)
-- Built with React.js
-- Uses modern React features and hooks
-- Implements Chart.js for data visualization
-- Features a responsive and user-friendly interface
-- Key dependencies:
-  - React 19.1.0
-  - React Router DOM 7.6.2
-  - Chart.js 4.4.9
-  - React Chart.js 2 5.3.0
+- User registration and login
+- Transaction CRUD flow
+- Basic transaction categorization
+- Spending and income visualization
+- REST API backend
+- React frontend
 
-### Backend (`/backend`)
-- Node.js/Express.js server
-- Sequelize ORM for database management
-- RESTful API architecture
-- Key features:
-  - User authentication
-  - Transaction management
-  - Database integration
-  - CORS enabled for frontend communication
+## Tech Stack
 
-## Getting Started
+### Frontend
 
-### Prerequisites
-- Node.js (Latest LTS version recommended)
-- MySQL or compatible database
-- npm or yarn package manager
+- React
+- React Router
+- Axios
+- Chart.js
+- React Chart.js 2
+- Bootstrap / React Bootstrap
+- React Icons
+- XLSX
 
-### Installation
+### Backend
 
-1. Clone the repository
-```bash
-git clone [repository-url]
-cd Mepay
+- Node.js
+- Express
+- Sequelize
+- MySQL-compatible database setup
+- JWT
+- bcryptjs
+- CORS
+- dotenv
+
+## Repository Structure
+
+```text
+mepay-web/
+├── backend/       # Express backend
+├── frontend/      # React frontend
+├── README.md
+├── package.json
+└── package-lock.json
 ```
 
-2. Set up the backend
+## API Overview
+
+Authentication:
+
+- `POST /api/register`
+- `POST /api/login`
+
+Transactions:
+
+- `GET /api/transactions`
+- `POST /api/transactions`
+- `GET /api/transactions/:id`
+- `PUT /api/transactions/:id`
+- `DELETE /api/transactions/:id`
+
+## Running Locally
+
+Backend:
+
 ```bash
 cd backend
 npm install
-# Create a .env file with necessary environment variables
 npm start
 ```
 
-3. Set up the frontend
+Frontend:
+
 ```bash
 cd frontend
 npm install
 npm start
-npm install react-icons
 ```
 
-### Environment Variables
+## Environment Variables
 
-Create a `.env` file in the backend directory with the following variables:
-```
+Create a `.env` file in the backend folder:
+
+```env
 PORT=3001
 DB_HOST=localhost
 DB_USER=your_username
 DB_PASSWORD=your_password
 DB_NAME=mepay_db
+JWT_SECRET=your_jwt_secret
 ```
 
-## Features
+## Notes
 
-- User Authentication
-  - Registration
-  - Login
-  - Session management
+This repo is intentionally kept as a low-priority pet project. The main value is showing the basic full-stack flow: auth, CRUD, database connection, and chart-based UI.
 
-- Transaction Management
-  - Add transactions
-  - View transaction history
-  - Categorize transactions
+## Author
 
-- Data Visualization
-  - Spending patterns
-  - Income tracking
-  - Financial analytics
+Built by [Loc-04](https://github.com/Loc-04).
 
-## API Endpoints
-
-### Authentication
-- POST `/api/register` - User registration
-- POST `/api/login` - User login
-
-### Transactions
-- GET `/api/transactions` - Get all transactions
-- POST `/api/transactions` - Create new transaction
-- GET `/api/transactions/:id` - Get specific transaction
-- PUT `/api/transactions/:id` - Update transaction
-- DELETE `/api/transactions/:id` - Delete transaction
-
-## Development
-
-The project uses a modern development stack with:
-- React for frontend development
-- Express.js for backend API
-- Sequelize for database operations
-- Chart.js for data visualization
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details. 
